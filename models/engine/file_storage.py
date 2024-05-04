@@ -68,3 +68,36 @@ class FileStorage:
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
         self.reload()
+
+    def get(self, cls, id):
+        """
+        Recupera un objeto por clase y ID.
+
+        Args:
+            cls (type): Clase del objeto a recuperar.
+            id (str): ID del objeto.
+
+        Returns:
+            obj: Objeto recuperado, o None si no se encuentra.
+        """
+        key = "{}.{}".format(cls.__name__, id)
+        return self.__objects.get(key, None)
+
+    def count(self, cls=None):
+        """
+        Cuenta el número de objetos almacenados por clase.
+
+        Args:
+            cls (type, opcional): Clase para contar objetos.
+                Si no se proporciona, cuenta todos los objetos.
+
+        Returns:
+            int: Número de objetos almacenados.
+        """
+        if cls:
+            return sum(
+                1 for obj_key in self.__objects
+                if obj_key.startswith(cls.__name__)
+             )
+        else:
+            return len(self.__objects)
